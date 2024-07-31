@@ -1,0 +1,23 @@
+--- /usr/bin/gnupod_convert_FLAC	2019-09-21 08:26:41.000000000 -0600
++++ /app/diff/gnupod_convert_FLAC	2024-01-17 15:51:40.719617714 -0700
+@@ -113,9 +113,9 @@
+ 	print "PATH:$tmpout\n";
+ }
+ elsif($gimme eq "GET_ALAC") {
+-	check_ffmpeg_alac() or die "ffmpeg not found or ffmpeg does not support ALAC encoding\n";
++	#check_ffmpeg_alac() or die "ffmpeg not found or ffmpeg does not support ALAC encoding\n";
+ 	my $tmpout = GNUpod::FooBar::get_u_path("/tmp/gnupod_alac", "m4a");
+-	my $status = system("ffmpeg", "-i", "$file", "-acodec", "alac", "-v", "0", $tmpout);
++	my $status = system("ffmpeg", "-y", "-vn", "-i", "$file", "-acodec", "alac", $tmpout);
+ 	if($status) {
+ 		warn "ffmpeg exited with $status, $!\n";
+ 		exit(1);
+@@ -132,7 +132,7 @@
+ sub check_ffmpeg_alac {
+ 	my @alac_support = grep(/\s+DEA\s+alac/,split(/\n/,
+ 		`ffmpeg -formats 2> /dev/null`));
+-	return (defined(@alac_support));
++	return (@alac_support);
+ }
+
+ exit(0);

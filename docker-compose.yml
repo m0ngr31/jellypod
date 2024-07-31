@@ -1,0 +1,26 @@
+services:
+  app:
+    image: m0ngr31/jellypod
+    container_name: jellypod
+    privileged: true
+    cap_add:
+      - SYS_ADMIN
+    volumes:
+      - ./data:/app/data
+      - /media/user/IPOD:/ipod
+    environment:
+      - JELLYFIN_URL=
+      - JELLYFIN_USER=
+      - JELLYFIN_PASS=
+      - INSTANT_MIXES=
+      - ALLOWED_BOOKS=
+      - MUSIC_MOUNT=
+      - PODCASTS_MOUNT=
+      - AUDIOBOOKS_MOUNT=
+      - SYNC_AUDIOBOOKS=
+      - SYNC_PODCASTS=
+      - SMB_USER=guest
+      - SMB_PASSWORD=
+      - PGID=
+      - PUID=
+    entrypoint: ["./entrypoint.sh"]

@@ -1,0 +1,69 @@
+--- /usr/bin/gnupod_addsong	2019-09-21 08:26:41.000000000 -0600
++++ /app/diff/gnupod_addsong	2024-01-17 15:51:47.823274966 -0700
+@@ -30,9 +30,11 @@
+ use File::Copy;
+ use File::Glob ':glob';
+ use Date::Parse;
++use Encode;
+
+ use constant MEDIATYPE_PODCAST_AUDIO => 4;
+ use constant MEDIATYPE_PODCAST_VIDEO => 6;
++use constant MEDIATYPE_AUDIOBOOK => 8;
+
+ use constant MACTIME => GNUpod::FooBar::MACTIME;
+ use vars qw(%opts %dupdb_normal %dupdb_lazy %dupdb_podcast $int_count %podcast_infos %podcast_channel_infos %per_file_info);
+@@ -48,7 +50,7 @@
+                    "set-playcount=i", "set-bookmarkable|b", "set-shuffleskip", "artwork=s", "replaygain-album",
+                    "set-songnum", "playlist|p=s@", "reencode|e=i",
+                    "min-vol-adj=i", "max-vol-adj=i", "playlist-is-podcast", "podcast-files-limit=i", "podcast-cache-dir=s",
+-                   "podcast-artwork", "set-compilation");
++                   "podcast-artwork", "set-compilation", "audiobook");
+
+ GNUpod::FooBar::GetConfig(\%opts, {'decode'=>'s', mount=>'s', duplicate=>'b', model=>'s', 'replaygain-album'=>'b',
+                                    'disable-v1'=>'b', 'disable-v2'=>'b', 'disable-ape-tag'=>'b', 'set-songnum'=>'b',
+@@ -221,6 +223,12 @@
+ 			create_playlist_now($opts{playlist}, $dup); #We also add duplicates to a playlist..
+ 			next;
+ 		}
++
++		if($opts{audiobook}) {
++			$fh->{shuffleskip}   = 1;
++			$fh->{bookmarkable}  = 1;
++			$fh->{mediatype} = MEDIATYPE_AUDIOBOOK;
++		}
+
+ 		# If this was a podcast, we need to fixup the mediatype
+ 		if($c_per_file_info->{ISPODCAST}) {
+@@ -378,10 +386,14 @@
+
+ ## XML Handlers ##
+ sub newfile {
+-	$dupdb_normal{lc($_[0]->{file}->{title})."/$_[0]->{file}->{bitrate}/$_[0]->{file}->{time}/$_[0]->{file}->{filesize}"}= $_[0]->{file}->{id}||-1;
++	my $title = decode_utf8(lc($_[0]->{file}->{title}));
++	my $album = decode_utf8(lc($_[0]->{file}->{album}));
++	my $artist = decode_utf8(lc($_[0]->{file}->{artist}));
++
++	$dupdb_normal{$title."/$_[0]->{file}->{bitrate}/$_[0]->{file}->{time}/$_[0]->{file}->{filesize}"}= $_[0]->{file}->{id}||-1;
+
+ 	#This is worse than _normal, but the only way to detect dups *before* re-encoding...
+-	$dupdb_lazy{lc($_[0]->{file}->{title})."/".lc($_[0]->{file}->{album})."/".lc($_[0]->{file}->{artist})}= $_[0]->{file}->{id}||-1;
++	$dupdb_lazy{$title."/".$album."/".$artist}= $_[0]->{file}->{id}||-1;
+
+ 	#Add podcast infos if it is an podcast
+ 	if($_[0]->{file}->{podcastguid}) {
+@@ -700,10 +712,11 @@
+ ###############################################################
+ # Check if the file is a duplicate
+ sub checkdup {
+- my($fh, $from_lazy) = @_;
+-
+- return  $dupdb_lazy{lc($_[0]->{title})."/".lc($_[0]->{album})."/".lc($_[0]->{artist})}
+-   if $from_lazy;
++ my($fh, $from_lazy) = @_;
++
++ if($from_lazy) {
++   return  $dupdb_lazy{decode_utf8(lc($_[0]->{title})."/".lc($_[0]->{album})."/".lc($_[0]->{artist}))};
++ }
+
+  return $dupdb_normal{lc($fh->{title})."/$fh->{bitrate}/$fh->{time}/$fh->{filesize}"};
+ }

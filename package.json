@@ -1,0 +1,40 @@
+{
+  "name": "jellypod",
+  "version": "1.0.0",
+  "description": "Service for syncing iPod Classic with Jellyfin and audiobookshelf",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky install",
+    "start": "ts-node index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joe Ipson",
+  "license": "MIT",
+  "dependencies": {
+    "@awo00/smb2": "^1.0.0",
+    "ascii-progress": "^2.0.0",
+    "axios": "^1.6.5",
+    "fs-extra": "^11.2.0",
+    "glob": "^10.3.10",
+    "lodash": "^4.17.21",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/lodash": "^4.14.202",
+    "@types/node": "^20.10.6",
+    "@typescript-eslint/eslint-plugin": "^6.18.0",
+    "eslint": "^7.17.0",
+    "eslint-plugin-sort-keys-custom-order-fix": "^0.1.1",
+    "husky": "^7.0.1",
+    "lint-staged": "^11.1.1",
+    "prettier": "2.3.2",
+    "ts-node": "^10.9.2"
+  },
+  "lint-staged": {
+    "!(slate/**).ts": [
+      "prettier --write",
+      "eslint --fix --format stylish"
+    ]
+  }
+}

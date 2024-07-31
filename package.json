@@ -11,7 +11,6 @@
   "author": "Joe Ipson",
   "license": "MIT",
   "dependencies": {
-    "@awo00/smb2": "^1.0.0",
     "ascii-progress": "^2.0.0",
     "axios": "^1.6.5",
     "fs-extra": "^11.2.0",

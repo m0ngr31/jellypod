@@ -8,13 +8,14 @@ services:
     volumes:
       - ./data:/app/data
       - /media/user/IPOD:/ipod
+      - /media/music:/musicdir
     environment:
       - JELLYFIN_URL=
       - JELLYFIN_USER=
       - JELLYFIN_PASS=
       - INSTANT_MIXES=
       - ALLOWED_BOOKS=
-      - MUSIC_MOUNT=
+      - MUSIC_MOUNT=/musicdir
       - PODCASTS_MOUNT=
       - AUDIOBOOKS_MOUNT=
       - SYNC_AUDIOBOOKS=

@@ -274,7 +274,7 @@ const JellyfinService = {
 
     musicLibraries.forEach(ml => {
       (ml.LibraryOptions?.PathInfos || []).forEach(p => {
-        const networkPath = p.Path.replace(/^\\+/, '\\');
+        const networkPath = p.NetworkPath.replace(/^\\+/, '\\');
 
         mappedPaths.push({
           mapped: musicDir,

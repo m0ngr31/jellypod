@@ -118,7 +118,8 @@ const main = async () => {
   }
 
   for (const f of allSongs) {
-    const mappedPath: string = JellyfinService.convertPath(f.Path);
+    let mappedPath: string = JellyfinService.convertPath(f.Path);
+    mappedPath = mappedPath.replace("/tmp/jelly-music", "/musicdir"); //hotfix
 
     const imagePath = await JellyfinService.getItemImageLocal(f);
     let mappedImagePath;
